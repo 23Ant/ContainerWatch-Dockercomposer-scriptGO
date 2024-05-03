@@ -1,4 +1,4 @@
-module github.com/codeedu/fc2-prometheus
+module github.com/23Ant/ContainerWatch-Dockercomposer-scriptGO/
 
 go 1.16
 
