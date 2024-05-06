@@ -47,4 +47,4 @@ services:
     volumes:
     - .:/go/src
     ports:
-    - 8181:8181
+    - 8282:8181
