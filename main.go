@@ -38,6 +38,26 @@ var networkTraffic = prometheus.NewGauge(prometheus.GaugeOpts{
 	Help: "Network traffic in bytes",
 })
 
+var networkTrafficErrors = prometheus.NewCounter(prometheus.CounterOpts{
+	Name: "goapp_network_traffic_errors_total",
+	Help: "Total number of network traffic errors",
+})
+
+var networkTrafficDrops = prometheus.NewCounter(prometheus.CounterOpts{
+	Name: "goapp_network_traffic_drops_total",
+	Help: "Total number of network traffic drops",
+})
+
+var networkSpeed = prometheus.NewGauge(prometheus.GaugeOpts{
+	Name: "goapp_network_speed",
+	Help: "Network speed in Mbps",
+})
+
+var filesystemSpaceAvailable = prometheus.NewGauge(prometheus.GaugeOpts{
+	Name: "goapp_filesystem_space_available",
+	Help: "Available filesystem space in bytes",
+})
+
 var systemStatus = prometheus.NewGauge(prometheus.GaugeOpts{
 	Name: "goapp_system_status",
 	Help: "System status (1 = online, 0 = offline)",
@@ -55,6 +75,10 @@ func main() {
 	r.MustRegister(httpDuration)
 	r.MustRegister(diskSpaceUsage)
 	r.MustRegister(networkTraffic)
+	r.MustRegister(networkTrafficErrors)
+	r.MustRegister(networkTrafficDrops)
+	r.MustRegister(networkSpeed)
+	r.MustRegister(filesystemSpaceAvailable)
 	r.MustRegister(systemStatus)
 	r.MustRegister(systemInfo)
 
@@ -63,6 +87,10 @@ func main() {
 			onlineUsers.Set(float64(rand.Intn(500)))
 			diskSpaceUsage.Set(float64(rand.Intn(1024 * 1024 * 1024))) // Simulate disk space usage up to 1GB
 			networkTraffic.Set(float64(rand.Intn(1024 * 1024)))        // Simulate network traffic up to 1MB
+			networkTrafficErrors.Inc()                                 // Simulate network traffic errors
+			networkTrafficDrops.Inc()                                  // Simulate network traffic drops
+			networkSpeed.Set(float64(rand.Intn(1000)))                 // Simulate network speed up to 1000 Mbps
+			filesystemSpaceAvailable.Set(float64(rand.Intn(1024 * 1024 * 1024))) // Simulate filesystem space available up to 1GB
 			systemStatus.Set(float64(rand.Intn(2)))                     // Simulate system status (0 or 1)
 			systemInfo.WithLabelValues("linux", "amd64", "1.0").Set(1)  // Simulate system information
 			time.Sleep(time.Second)
