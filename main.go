@@ -75,7 +75,7 @@ func main() {
 	// Start a goroutine to update the online users metric periodically
 	go func() {
 		for {
-			onlineUsers.Set(float64(rand.Intn(500)))
+			onlineUsers.Set(float64(rand.Intn(50)))
 			time.Sleep(time.Second)
 		}
 	}()
@@ -174,5 +174,5 @@ func main() {
 	http.Handle("/metrics", promhttp.HandlerFor(r, promhttp.HandlerOpts{}))
 
 	// Start the HTTP server
-	log.Fatal(http.ListenAndServe(":8181", nil))
+	log.Fatal(http.ListenAndServe(":8282", nil))
 }
