@@ -84,16 +84,6 @@ var memoryUsage = prometheus.NewGauge(prometheus.GaugeOpts{
 	Help: "Memory usage in bytes",
 })
 
-var diskReadsCompleted = prometheus.NewCounterVec(prometheus.CounterOpts{
-	Name: "goapp_disk_reads_completed_total",
-	Help: "Total number of completed disk reads",
-}, []string{"instance", "job", "device"})
-
-var diskReadsCompletedRate = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-	Name: "goapp_disk_reads_completed_rate",
-	Help: "Rate of completed disk reads per second",
-}, []string{"instance", "job", "device"})
-
 func main() {
 	r := prometheus.NewRegistry()
 	r.MustRegister(onlineUsers)
@@ -110,8 +100,6 @@ func main() {
 	r.MustRegister(systemStatus)
 	r.MustRegister(systemInfo)
 	r.MustRegister(memoryUsage)
-	r.MustRegister(diskReadsCompleted)
-	r.MustRegister(diskReadsCompletedRate)
 
 	go func() {
 		for {
@@ -127,18 +115,6 @@ func main() {
 			systemStatus.Set(float64(rand.Intn(2)))                     // Simulate system status (0 or 1)
 			systemInfo.WithLabelValues(runtime.GOOS, runtime.GOARCH, "1.0").Set(1)  // Simulate system information
 			memoryUsage.Set(float64(rand.Intn(1024 * 1024 * 1024)))     // Simulate memory usage up to 1GB
-
-			// Simulate disk reads completed
-			instance := "app:8181" // Define a instância desejada
-			job := "goapp"         // Define o job desejado
-			device := "disk1"      // Define o dispositivo de disco desejado
-			diskReads := float64(rand.Intn(100))
-			diskReadsCompleted.WithLabelValues(instance, job, device).Add(diskReads)
-
-			// Calcula a taxa de leituras de disco concluídas por segundo
-			rate := float64(diskReads) / float64(time.Second.Seconds())
-			diskReadsCompletedRate.WithLabelValues(instance, job, device).Set(rate)
-
 			time.Sleep(time.Second)
 		}
 	}()
