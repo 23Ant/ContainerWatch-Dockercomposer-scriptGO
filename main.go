@@ -3,10 +3,10 @@ package main
 import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/shirou/gopsutil/mem"
 	"log"
 	"math/rand"
 	"net/http"
+	"runtime"
 	"time"
 )
 
@@ -59,6 +59,16 @@ var filesystemSpaceAvailable = prometheus.NewGauge(prometheus.GaugeOpts{
 	Help: "Available filesystem space in bytes",
 })
 
+var cpuUsage = prometheus.NewGauge(prometheus.GaugeOpts{
+	Name: "goapp_cpu_usage",
+	Help: "CPU usage in percentage",
+})
+
+var fileDescriptor = prometheus.NewGauge(prometheus.GaugeOpts{
+	Name: "goapp_file_descriptor",
+	Help: "Number of file descriptors",
+})
+
 var systemStatus = prometheus.NewGauge(prometheus.GaugeOpts{
 	Name: "goapp_system_status",
 	Help: "System status (1 = online, 0 = offline)",
@@ -69,9 +79,9 @@ var systemInfo = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 	Help: "Basic system information",
 }, []string{"os", "arch", "version"})
 
-var memoryRAMUsage = prometheus.NewGauge(prometheus.GaugeOpts{
-	Name: "goapp_memory_ram_usage",
-	Help: "Memory RAM usage in bytes",
+var memoryUsage = prometheus.NewGauge(prometheus.GaugeOpts{
+	Name: "goapp_memory_usage",
+	Help: "Memory usage in bytes",
 })
 
 func main() {
@@ -85,9 +95,11 @@ func main() {
 	r.MustRegister(networkTrafficDrops)
 	r.MustRegister(networkSpeed)
 	r.MustRegister(filesystemSpaceAvailable)
+	r.MustRegister(cpuUsage)
+	r.MustRegister(fileDescriptor)
 	r.MustRegister(systemStatus)
 	r.MustRegister(systemInfo)
-	r.MustRegister(memoryRAMUsage)
+	r.MustRegister(memoryUsage)
 
 	go func() {
 		for {
@@ -98,15 +110,11 @@ func main() {
 			networkTrafficDrops.Inc()                                  // Simulate network traffic drops
 			networkSpeed.Set(float64(rand.Intn(1000)))                 // Simulate network speed up to 1000 Mbps
 			filesystemSpaceAvailable.Set(float64(rand.Intn(1024 * 1024 * 1024))) // Simulate filesystem space available up to 1GB
+			cpuUsage.Set(float64(rand.Intn(100)))                      // Simulate CPU usage between 0 and 100%
+			fileDescriptor.Set(float64(rand.Intn(500)))                // Simulate number of file descriptors
 			systemStatus.Set(float64(rand.Intn(2)))                     // Simulate system status (0 or 1)
-
-			// Get memory RAM usage
-			memInfo, err := mem.VirtualMemory()
-			if err == nil {
-				memoryRAMUsage.Set(float64(memInfo.Used))
-			}
-
-			systemInfo.WithLabelValues("linux", "amd64", "1.0").Set(1)  // Simulate system information
+			systemInfo.WithLabelValues(runtime.GOOS, runtime.GOARCH, "1.0").Set(1)  // Simulate system information
+			memoryUsage.Set(float64(rand.Intn(1024 * 1024 * 1024)))     // Simulate memory usage up to 1GB
 			time.Sleep(time.Second)
 		}
 	}()
