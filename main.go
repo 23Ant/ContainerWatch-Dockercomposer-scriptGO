@@ -122,7 +122,7 @@ func main() {
 	home := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(time.Duration(rand.Intn(8)) * time.Second)
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("Hello Full Cycle"))
+		w.Write([]byte("Hello !!!"))
 	})
 
 	contact := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
