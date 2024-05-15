@@ -149,6 +149,6 @@ func main() {
 
 // randomDiskSpaceUsage simulates the disk space usage with a random value.
 func randomDiskSpaceUsage() float64 {
-	// Simulate disk space usage between 0 and 500MB
-	return float64(rand.Intn(500 * 1024 * 1024))
+	// Simulate disk space usage between 0 and 5GB
+	return float64(rand.Intn(5 * 1024 * 1024 * 1024))
 }
