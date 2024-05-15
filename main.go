@@ -104,7 +104,7 @@ func main() {
 	go func() {
 		for {
 			onlineUsers.Set(float64(rand.Intn(500)))
-			diskSpaceUsage.Set(float64(rand.Intn(500 * 1024 * 1024))) // Simulate disk space usage up to 500MB // Simulate disk space usage up to 1GB
+			diskSpaceUsage.Set(randomDiskSpaceUsage()) // Set disk space usage to a random value
 			networkTraffic.Set(float64(rand.Intn(1024 * 1024)))        // Simulate network traffic up to 1MB
 			networkTrafficErrors.Inc()                                 // Simulate network traffic errors
 			networkTrafficDrops.Inc()                                  // Simulate network traffic drops
@@ -145,4 +145,10 @@ func main() {
 	http.Handle("/contact", d2)
 	http.Handle("/metrics", promhttp.HandlerFor(r, promhttp.HandlerOpts{}))
 	log.Fatal(http.ListenAndServe(":8181", nil))
+}
+
+// randomDiskSpaceUsage simulates the disk space usage with a random value.
+func randomDiskSpaceUsage() float64 {
+	// Simulate disk space usage between 0 and 500MB
+	return float64(rand.Intn(500 * 1024 * 1024))
 }
