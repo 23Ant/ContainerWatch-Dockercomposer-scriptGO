@@ -104,7 +104,7 @@ func main() {
 	go func() {
 		for {
 			onlineUsers.Set(float64(rand.Intn(500)))
-			diskSpaceUsage.Set(float64(rand.Intn(1024 * 1024 * 1024))) // Simulate disk space usage up to 1GB
+			diskSpaceUsage.Set(float64(rand.Intn(500 * 1024 * 1024))) // Simulate disk space usage up to 500MB // Simulate disk space usage up to 1GB
 			networkTraffic.Set(float64(rand.Intn(1024 * 1024)))        // Simulate network traffic up to 1MB
 			networkTrafficErrors.Inc()                                 // Simulate network traffic errors
 			networkTrafficDrops.Inc()                                  // Simulate network traffic drops
