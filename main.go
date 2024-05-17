@@ -146,9 +146,3 @@ func main() {
 	http.Handle("/metrics", promhttp.HandlerFor(r, promhttp.HandlerOpts{}))
 	log.Fatal(http.ListenAndServe(":8181", nil))
 }
-
-// randomDiskSpaceUsage simulates the disk space usage with a random value.
-func randomDiskSpaceUsage() float64 {
-	// Simulate disk space usage between 0 and 5GB
-	return float64(rand.Intn(5 * 1024 * 1024 * 1024))
-}
